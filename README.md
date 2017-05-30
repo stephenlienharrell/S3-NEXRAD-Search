@@ -5,9 +5,13 @@ download them.
 
 Some relevant links:
 [NOAA Next Generation Radar (NEXRAD) Level II Base Data](https://data.noaa.gov/dataset/noaa-next-generation-radar-nexrad-level-ii-base-data)
+
 [NEXRAD on AWS](https://aws.amazon.com/public-datasets/nexrad/)
+
 [NEXRAD and TDWR Radar Locations](https://www.roc.noaa.gov/WSR88D/Maps.aspx)
+
 [NEXRAD on Wikipedia](https://en.wikipedia.org/wiki/NEXRAD)
+
 
 ## Command Line Interface
 

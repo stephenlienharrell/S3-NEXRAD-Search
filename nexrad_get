@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+
+__author__ = "Stephen Lien Harrell <stephen@tekikal.org>"
+# also sharrell@purdue.edu
+
+import argparse
+from datetime import datetime
+import s3_nexrad_search
+
+
+
+def main():
+    desc = """This utility searches the S3 hosted NEXRAD Level II dataset based on a
+    lat/lon domain and time range. It returns relevant files within the dataset
+    with the option to download them."""
+
+    parser = argparse.ArgumentParser(description=desc)
+
+    parser.add_argument("-v", "--verbose", action="store_true",
+             help="Print non-error output [DEFAULT: False]")
+    parser.add_argument("-r", "--dryrun", action="store_true",
+             help="List files only, implies -v")
+    parser.add_argument("-o", "--download_dir", required=False, 
+            help="Directory for temporary downloads")
+    parser.add_argument("-w", "--maxlat", type=float, required=True,
+            help="Maximum latitude of search domain")
+    parser.add_argument("-a", "--maxlon", type=float, required=True,
+            help="Maximum longitude of search domain")
+    parser.add_argument("-s", "--minlat", type=float, required=True,
+            help="Minimum latitude of search domain")
+    parser.add_argument("-d", "--minlon", type=float, required=True,
+            help="Minimum longitude of search domain")
+    parser.add_argument("-t", "--starttime", required=True,
+            help="Start of time range with format %%Y-%%m-%%dT%%H:%%M:%%S ex. 2015-05-05T10:15:00")
+    parser.add_argument("-e", "--endtime", required=True,
+            help="End of time range with format %%Y-%%m-%%dT%%H:%%M:%%S ex. 2015-05-05T10:15:00")
+    parser.add_argument('-p', '--threads', type=int, required=False, default=1,
+            help='Number of threads to use for downloading [DEFAULT: 1]')
+
+
+    options = parser.parse_args()
+
+    if options.dryrun:
+        options.verbose = True
+    elif options.download_dir is None:
+        print "Download dirctory must be specified"
+        return
+
+    if (options.maxlat > 90 or options.maxlat < -90 or
+            options.minlat > 90 or options.minlat < -90):
+        print "Latitude must be between -90 and 90" 
+        return
+
+    if (options.maxlon > 180 or options.maxlon < -180 or
+            options.minlon > 180 or options.minlon < -180):
+        print "Longitude must be between -180 and 180" 
+        return
+
+    if (options.maxlat < options.minlat):
+        print "--maxlat must be larger than --minlat"
+        return
+
+    if (options.maxlon < options.minlon):
+        print "--maxlon must be larger than --minlon"
+        return
+
+    try:
+        options.starttime = datetime.strptime(options.starttime, "%Y-%m-%dT%H:%M:%S")
+        options.endtime = datetime.strptime(options.endtime, "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        print "Start and end times must be in the format %%Y-%%m-%%dT%%H:%%M:%%S ex. 2015-05-05T10:15:00"
+        return
+
+    nexrad = s3_nexrad_search.S3NEXRADHelper(verbose=options.verbose, threads=options.threads)
+    s3keys = nexrad.findNEXRADKeysByTimeAndDomain(
+            options.starttime, options.endtime,
+            options.maxlat, options.maxlon, options.minlat, options.minlon)
+
+    if not options.dryrun:
+        nexrad.downloadNEXRADFiles(options.download_dir, s3keys)
+
+        
+if __name__ == "__main__":
+    main()

@@ -212,11 +212,16 @@ STATION_LATLONS = [(station["latitude"], station["longitude"]) for station in ST
 
 class S3NEXRADHelper:
 
-    def __init__(self, verbose=True, thread_max=1):
+    def __init__(self, verbose=True, threads=1):
+        """Initalizes variables for this class
+
+        verbose: Boolean of if we should print non-error information
+        threads: The amount of threads to use for downloading from S3
+        """
         self.s3conn = boto.connect_s3(anon=True)
         self.bucket = self.s3conn.get_bucket("noaa-nexrad-level2")
         self.verbose = verbose
-        self.thread_max = thread_max
+        self.thread_max = threads
         self.threads = []
         self.thread_count = 0
 
@@ -517,7 +522,7 @@ def _downloadFile(key, file_path, verbose):
 
 def main():
     ## EXAMPLE USAGE
-    nexrad = S3NEXRADHelper(thread_max=20)
+    nexrad = S3NEXRADHelper(threads=20)
     s3keys = nexrad.findNEXRADKeysByTimeAndDomain(
             datetime.datetime(day=5, month=5, year=2015, hour=5),
             datetime.datetime(day=5, month=5, year=2015, hour=6), 

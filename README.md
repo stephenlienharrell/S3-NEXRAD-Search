@@ -48,6 +48,7 @@ Relevant function definitions and doc strings:
         """        
 
 Example usage:
+    
     from s3_nexrad_search import S3NEXRADHelper
     
     nexrad = S3NEXRADHelper()

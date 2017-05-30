@@ -1,5 +1,5 @@
 # S3 NEXRAD Search
-This command line tool and python library searches the NEXRAD dataset based on a lat/lon domain and
+This command line tool and python library searches the NEXRAD dataset based on a latitude and longitdue based domain and
 time range. It returns relevant files within the dataset with the option to
 download them. 
 

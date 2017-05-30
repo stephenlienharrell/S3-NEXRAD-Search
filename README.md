@@ -30,6 +30,8 @@ Usage:
       -e ENDTIME, --endtime ENDTIME
                             End of time range with format %Y-%m-%dT%H:%M:%S ex.
                             2015-05-05T10:15:00
+      -p THREADS, --threads THREADS
+                            Number of threads to use for downloading [DEFAULT: 1]
 
 Example Usage:
 

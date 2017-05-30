@@ -7,6 +7,9 @@ import matplotlib
 import numpy
 import utm
 
+__author__ "Stephen Lien Harrell <stephen@teknikal.org>"
+# also sharrell@purdue.edu
+
 # From https://en.wikipedia.org/wiki/NEXRAD
 # "The deployment of the dual polarization capability (Build 12) to NEXRAD sites began in 2010 and was completed by the summer of 2013."
 # Would love to have specifics on deployment for this, for now just assume August 2013

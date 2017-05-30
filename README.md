@@ -1,12 +1,14 @@
 # S3 NEXRAD Search
-A Python utility to search the NEXRAD Level II dataset hosted in Amazon's S3.
-
-This python library searches the NEXRAD dataset based on a lat/lon domain and time range. It returns relevant files within the dataset with the option to download them. 
+This python library searches the NEXRAD dataset based on a lat/lon domain and
+time range. It returns relevant files within the dataset with the option to
+download them. 
 
 Relevant function definitions and doc strings:
 
-    def findNEXRADKeysByTimeAndDomain(self, start_datetime, end_datetime, maxlat, maxlon, minlat, minlon):
-        """Get list of keys to nexrad files on s3 from a time range and lat/lon domain.
+    def findNEXRADKeysByTimeAndDomain(self, start_datetime, end_datetime,
+            maxlat, maxlon, minlat, minlon):
+        """Get list of keys to nexrad files on s3 from a time range and 
+        lat/lon domain.
 
         start_datetime: start of time range in a datetime.datetime object
         end_datetime: end of time range in a datetime.datetime object
@@ -15,7 +17,8 @@ Relevant function definitions and doc strings:
         minlat: minimum lattitude of domain
         minlon: minimum longitude of domain
 
-        returns: List of keys in nexrad s3 bucket corespopnding to the parameters
+        returns: List of keys in nexrad s3 bucket corespopnding to the
+        parameters
         """
 
     def downloadNEXRADFiles(self, download_dir, s3keys):
@@ -44,7 +47,8 @@ Relevant function definitions and doc strings:
         end_datetime: end of time range in a datetime.datetime object
         station_list: list of station ids as strings ex. ["KIND", "KVBX"]
 
-        returns: list of keys in the nexrad s3 bucket within the time range for the specified stations
+        returns: list of keys in the nexrad s3 bucket within the time 
+        range for the specified stations
         """        
 
 Example usage:

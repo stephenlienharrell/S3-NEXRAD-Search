@@ -1,13 +1,15 @@
 import datetime
 import math
+import multiprocessing
 import os
+import time
 
 import boto
 import matplotlib
 import numpy
 import utm
 
-__author__ "Stephen Lien Harrell <stephen@teknikal.org>"
+__author__ = "Stephen Lien Harrell <stephen@teknikal.org>"
 # also sharrell@purdue.edu
 
 # From https://en.wikipedia.org/wiki/NEXRAD
@@ -210,10 +212,13 @@ STATION_LATLONS = [(station["latitude"], station["longitude"]) for station in ST
 
 class S3NEXRADHelper:
 
-    def __init__(self, verbose=True):
+    def __init__(self, verbose=True, thread_max=1):
         self.s3conn = boto.connect_s3(anon=True)
         self.bucket = self.s3conn.get_bucket("noaa-nexrad-level2")
         self.verbose = verbose
+        self.thread_max = thread_max
+        self.threads = []
+        self.thread_count = 0
 
     def findNEXRADKeysByTimeAndDomain(self, start_datetime, end_datetime, maxlat, maxlon, minlat, minlon):
         """Get list of keys to nexrad files on s3 from a time range and lat/lon domain.
@@ -260,20 +265,12 @@ class S3NEXRADHelper:
         file_paths = []
         for key in s3keys:
             file_path = os.path.join(download_dir, key.split('/')[-1])
-            keyobj = self.bucket.get_key(key)
-            if keyobj is None:
-                if self.verbose: print "Unable to find files %s, skipping" % key
-                continue
-
-            dfile = open(file_path, 'w')
-            try:
-                keyobj.get_file(dfile)
-            finally:
-                dfile.close()
-
-            if self.verbose:
-                print "%s downloaded" % file_path
             file_paths.append(file_path)
+
+            self._addToThreadPool(_downloadFile, (key, file_path, self.verbose))
+            self._waitForThreadPool()
+
+        self._waitForThreadPool(thread_max=0)
 
         return file_paths
             
@@ -478,10 +475,49 @@ class S3NEXRADHelper:
 
         return (easting_points, northing_points, zone_number, zone_letter)
 
+    def _addToThreadPool(self, function, args):
+        proc = multiprocessing.Process(target=function, args=args)
+        proc.start()
+        self.threads.append(proc)
+        self.thread_count += 1
+
+    def _waitForThreadPool(self, thread_max=None):
+        if thread_max is None:
+            thread_limit = self.thread_max - 1
+        else:
+            thread_limit = thread_max
+        count = 0
+        while len(self.threads) > thread_limit:
+            time.sleep(.1)
+            if count > len(self.threads) - 1:
+                count = 0
+            if self.threads[count].exitcode is not None:
+                self.threads[count].join(1)
+                self.threads.pop(count)
+            else: 
+                count += 1
+
+def _downloadFile(key, file_path, verbose):
+    s3conn = boto.connect_s3(anon=True)
+    bucket = s3conn.get_bucket("noaa-nexrad-level2")
+    keyobj = bucket.get_key(key)
+    if keyobj is None:
+        if self.verbose: print "Unable to find file %s, skipping" % key
+        return
+
+    dfile = open(file_path, 'w')
+    try:
+        keyobj.get_file(dfile)
+    finally:
+        dfile.close()
+
+    if verbose:
+        print "%s downloaded" % file_path
+
 
 def main():
     ## EXAMPLE USAGE
-    nexrad = S3NEXRADHelper()
+    nexrad = S3NEXRADHelper(thread_max=20)
     s3keys = nexrad.findNEXRADKeysByTimeAndDomain(
             datetime.datetime(day=5, month=5, year=2015, hour=5),
             datetime.datetime(day=5, month=5, year=2015, hour=6), 

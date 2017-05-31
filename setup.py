@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(name='s3_nexrad_search',
-      version='1.0',
+      version='1.1',
       description="Command line utility and Python library to search the NEXRAD Level II dataset hosted in Amazon's S3",
       url='https://github.com/stephenlienharrell/S3-NEXRAD-Search',
-      download_url = 'https://github.com/stephenlienharrell/S3-NEXRAD-Search/archive/1.0.tar.gz',
+      download_url = 'https://github.com/stephenlienharrell/S3-NEXRAD-Search/archive/1.1.tar.gz',
       author='Stephen Lien Harrell',
       author_email='stephen@teknikal.org',
       license='MIT',

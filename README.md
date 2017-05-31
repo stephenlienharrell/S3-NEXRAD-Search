@@ -14,6 +14,11 @@ Some relevant links:
 [NEXRAD on Wikipedia](https://en.wikipedia.org/wiki/NEXRAD)
 
 
+## Installation:
+
+    $ pip install s3_nexrad_search
+
+
 ## Command Line Interface
 
 Usage:

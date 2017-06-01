@@ -94,12 +94,6 @@ Relevant function definitions and doc strings from class S3NEXRADHelper:
         verbose: Boolean of if we should print non-error information
         threads: The amount of threads to use for downloading from S3
         """
-        self.s3conn = boto.connect_s3(anon=True)
-        self.bucket = self.s3conn.get_bucket("noaa-nexrad-level2")
-        self.verbose = verbose
-        self.thread_max = threads
-        self.threads = []
-        self.thread_count = 0
 
     def findNEXRADKeysByTimeAndDomain(self, start_datetime, end_datetime,
             maxlat, maxlon, minlat, minlon):
@@ -134,6 +128,8 @@ Relevant function definitions and doc strings from class S3NEXRADHelper:
         maxlon: maximum longitude of domain
         minlat: minimum lattitude of domain
         minlon: minimum longitude of domain
+
+        returns: list of station ids ex. ['KIND', 'KLVX']
         """        
         
     def searchNEXRADS3(self, start_datetime, end_datetime, station_list):

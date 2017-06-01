@@ -287,6 +287,8 @@ class S3NEXRADHelper:
         maxlon: maximum longitude of domain
         minlat: minimum lattitude of domain
         minlon: minimum longitude of domain
+
+        returns: list of station ids ex. ['KIND', 'KLVX']
         """
 
         # http://geokov.com/education/utm.aspx

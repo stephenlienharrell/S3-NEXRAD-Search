@@ -309,8 +309,12 @@ class S3NEXRADHelper:
         for i, latlon in enumerate(STATION_LATLONS): 
             lat, lon = latlon
 
-            relevant_radius = RELEVANT_DISTANCE_COEFFICENT*self._calculateRadiusAtHeight(
-                    height, STATION_INDEX[i]['station_elevation'])
+            station_radius = self._calculateRadiusAtHeight(height, 
+                    STATION_INDEX[i]['station_elevation'])
+            if station_radius is None:
+                continue
+
+            relevant_radius = RELEVANT_DISTANCE_COEFFICENT*station_radius
 
             maxeast = maxeast_domain + relevant_radius
             maxnorth = maxnorth_domain + relevant_radius

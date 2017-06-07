@@ -282,7 +282,7 @@ class S3NEXRADHelper:
 
         return file_paths
             
-    def getStationsFromDomain(self, maxlat, maxlon, minlat, minlon, height=10000):
+    def getStationsFromDomain(self, maxlat, maxlon, minlat, minlon, height):
         """Searches station list for radar stations that would be relevant
         to the domain provided.
 

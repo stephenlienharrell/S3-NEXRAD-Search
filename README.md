@@ -50,39 +50,37 @@ Usage:
                             Number of threads to use for downloading [DEFAULT: 1]
 
 Example Usage:
-
-    $ nexrad_get --starttime 2015-05-05T15:05:00 --endtime 2015-05-05T15:20:00 --maxlat 41.22 --maxlon "-84.79" --minlat 38.22 --minlon "-87.79" -o temp -v -p 20
-    Found stations: KIWX,KIND,KILN,KVWX,KLVX for domain 41.22,-84.79 to 38.22,-87.79
-    Found files for time range: 2015-05-05 15:05:00 to 2015-05-05 15:20:00
-    2015/05/05/KIWX/KIWX20150505_150845_V06.gz
-    2015/05/05/KIWX/KIWX20150505_151253_V06.gz
-    2015/05/05/KIWX/KIWX20150505_151702_V06.gz
-    2015/05/05/KIND/KIND20150505_150723_V06.gz
-    2015/05/05/KIND/KIND20150505_151126_V06.gz
-    2015/05/05/KIND/KIND20150505_151527_V06.gz
-    2015/05/05/KIND/KIND20150505_151930_V06.gz
-    2015/05/05/KILN/KILN20150505_150819_V06.gz
-    2015/05/05/KILN/KILN20150505_151202_V06.gz
-    2015/05/05/KILN/KILN20150505_151543_V06.gz
-    2015/05/05/KILN/KILN20150505_151925_V06.gz
-    2015/05/05/KVWX/KVWX20150505_150812_V06.gz
-    2015/05/05/KVWX/KVWX20150505_151758_V06.gz
-    2015/05/05/KLVX/KLVX20150505_151148_V06.gz
-    temp/KVWX20150505_150812_V06.gz downloaded
-    temp/KLVX20150505_151148_V06.gz downloaded
-    temp/KILN20150505_150819_V06.gz downloaded
+    ./nexrad_get --starttime 2015-05-05T15:05:00 --endtime 2015-05-05T15:20:00 --maxlat 41.22 --maxlon "-84.79" --minlat 38.22 --minlon "-87.79" -o temp -v -p 20 --height 10000
+	Found stations: KIWX,KIND,KILN,KVWX,KLVX for domain 41.22,-84.79 to 38.22,-87.79
+	Found files for time range: 2015-05-05 15:05:00 to 2015-05-05 15:20:00
+	2015/05/05/KIWX/KIWX20150505_150845_V06.gz
+	2015/05/05/KIWX/KIWX20150505_151253_V06.gz
+	2015/05/05/KIWX/KIWX20150505_151702_V06.gz
+	2015/05/05/KIND/KIND20150505_150723_V06.gz
+	2015/05/05/KIND/KIND20150505_151126_V06.gz
+	2015/05/05/KIND/KIND20150505_151527_V06.gz
+	2015/05/05/KIND/KIND20150505_151930_V06.gz
+	2015/05/05/KILN/KILN20150505_150819_V06.gz
+	2015/05/05/KILN/KILN20150505_151202_V06.gz
+	2015/05/05/KILN/KILN20150505_151543_V06.gz
+	2015/05/05/KILN/KILN20150505_151925_V06.gz
+	2015/05/05/KVWX/KVWX20150505_150812_V06.gz
+	2015/05/05/KVWX/KVWX20150505_151758_V06.gz
+	2015/05/05/KLVX/KLVX20150505_151148_V06.gz
     temp/KIND20150505_151527_V06.gz downloaded
-    temp/KVWX20150505_151758_V06.gz downloaded
-    temp/KIWX20150505_150845_V06.gz downloaded
-    temp/KILN20150505_151202_V06.gz downloaded
-    temp/KILN20150505_151925_V06.gz downloaded
-    temp/KILN20150505_151543_V06.gz downloaded
-    temp/KIND20150505_151126_V06.gz downloaded
+    temp/KLVX20150505_151148_V06.gz downloaded
     temp/KIND20150505_151930_V06.gz downloaded
-    temp/KIND20150505_150723_V06.gz downloaded
-    temp/KIWX20150505_151253_V06.gz downloaded
     temp/KIWX20150505_151702_V06.gz downloaded
-
+    temp/KIND20150505_150723_V06.gz downloaded
+    temp/KILN20150505_151202_V06.gz downloaded
+    temp/KVWX20150505_151758_V06.gz downloaded
+    temp/KILN20150505_151543_V06.gz downloaded
+    temp/KIWX20150505_150845_V06.gz downloaded
+    temp/KILN20150505_150819_V06.gz downloaded
+    temp/KILN20150505_151925_V06.gz downloaded
+    temp/KVWX20150505_150812_V06.gz downloaded
+    temp/KIND20150505_151126_V06.gz downloaded
+    temp/KIWX20150505_151253_V06.gz downloaded
 
 ## Python Library
 
@@ -96,7 +94,7 @@ Relevant function definitions and doc strings from class S3NEXRADHelper:
         """
 
     def findNEXRADKeysByTimeAndDomain(self, start_datetime, end_datetime,
-            maxlat, maxlon, minlat, minlon):
+            maxlat, maxlon, minlat, minlon, height):
         """Get list of keys to nexrad files on s3 from a time range and 
         lat/lon domain.
 
@@ -106,6 +104,7 @@ Relevant function definitions and doc strings from class S3NEXRADHelper:
         maxlon: maximum longitude of domain
         minlat: minimum lattitude of domain
         minlon: minimum longitude of domain
+        height: height above sealevel in meters for domain
 
         returns: List of keys in nexrad s3 bucket corespopnding to the
         parameters
@@ -120,7 +119,7 @@ Relevant function definitions and doc strings from class S3NEXRADHelper:
         returns: list of downloaded file paths
         """
         
-    def getStationsFromDomain(self, maxlat, maxlon, minlat, minlon):
+    def getStationsFromDomain(self, maxlat, maxlon, minlat, minlon, height):
         """Searches station list for radar stations that would be relevant
         to the domain provided.
 
@@ -128,6 +127,7 @@ Relevant function definitions and doc strings from class S3NEXRADHelper:
         maxlon: maximum longitude of domain
         minlat: minimum lattitude of domain
         minlon: minimum longitude of domain
+        height: height above sealevel in meters for domain
 
         returns: list of station ids ex. ['KIND', 'KLVX']
         """        
@@ -151,5 +151,5 @@ Example usage:
     s3keys = nexrad.findNEXRADKeysByTimeAndDomain(
             datetime.datetime(day=5, month=5, year=2015, hour=5),
             datetime.datetime(day=5, month=5, year=2015, hour=6),
-            41.22, -84.79, 38.22, -87.79)
+            41.22, -84.79, 38.22, -87.79, 10000)
     nexrad.downloadNEXRADFiles('temp', s3keys)

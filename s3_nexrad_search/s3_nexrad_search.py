@@ -281,6 +281,29 @@ class S3NEXRADHelper:
         self._waitForThreadPool(thread_max=0)
 
         return file_paths
+
+    def getStationsFromWRFDomain(self, dx, dy, e_sn, e_we, ref_lat, ref_lon, height):
+        """Searches station list for radar stations that would be relevant
+        to the domain provided.
+
+        WARNING: This may not be accurate for very large domains
+
+        dx, dy, e_sn, e_we, ref_lat, ref_lon are equivalent to the namelist.wps variables
+        from the WRF Preprocessing System (WPS)
+
+        height: height above sealevel in meters for domain (not from WPS namelist)
+
+        returns: list of station ids ex. ['KIND', 'KLVX']
+        """
+        center_north, center_east, zone_number, zone_letter = utm.from_latlon(ref_lat, ref_lon)
+        maxlat, maxlon = utm.to_latlon(center_north + (e_sn/2.0*dy), center_east + 
+                (e_we/2.0*dx), zone_number, zone_letter, strict=False)
+        minlat, minlon = utm.to_latlon(center_north - (e_sn/2.0*dy), 
+                center_east - (e_we/2.0*dx), zone_number, zone_letter, strict=False)
+
+        station_list = self.getStationsFromDomain(maxlat, maxlon, minlat, minlon, height)
+        return station_list
+
             
     def getStationsFromDomain(self, maxlat, maxlon, minlat, minlon, height):
         """Searches station list for radar stations that would be relevant
@@ -620,6 +643,8 @@ def _downloadFile(key, file_path, verbose):
         print "%s downloaded" % file_path
 
 
+
+
 def main():
     ## EXAMPLE USAGE
     nexrad = S3NEXRADHelper(threads=20)
@@ -627,7 +652,7 @@ def main():
             datetime.datetime(day=5, month=5, year=2015, hour=5),
             datetime.datetime(day=5, month=5, year=2015, hour=6), 
             41.22, -84.79, 38.22, -87.79, 20000)
-    #nexrad.downloadNEXRADFiles('temp', s3keys)
+    nexrad.downloadNEXRADFiles('temp', s3keys)
 
 if __name__ == "__main__":
     main()

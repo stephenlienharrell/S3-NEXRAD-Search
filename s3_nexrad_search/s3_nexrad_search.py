@@ -295,11 +295,11 @@ class S3NEXRADHelper:
 
         returns: list of station ids ex. ['KIND', 'KLVX']
         """
-        center_north, center_east, zone_number, zone_letter = utm.from_latlon(ref_lat, ref_lon)
-        maxlat, maxlon = utm.to_latlon(center_north + (e_sn/2.0*dy), center_east + 
-                (e_we/2.0*dx), zone_number, zone_letter, strict=False)
-        minlat, minlon = utm.to_latlon(center_north - (e_sn/2.0*dy), 
-                center_east - (e_we/2.0*dx), zone_number, zone_letter, strict=False)
+        center_east, center_north, zone_number, zone_letter = utm.from_latlon(ref_lat, ref_lon)
+        maxlat, maxlon = utm.to_latlon(center_east + (e_we/2.0*dx), center_north + (e_sn/2.0*dy),
+                                       zone_number, zone_letter, strict=False)
+        minlat, minlon = utm.to_latlon(center_east - (e_we/2.0*dx), center_north - (e_sn/2.0*dy),
+                                       zone_number, zone_letter, strict=False)
 
         station_list = self.getStationsFromDomain(maxlat, maxlon, minlat, minlon, height)
         return station_list

@@ -323,9 +323,9 @@ class S3NEXRADHelper:
         # max lon is east side
         # max lat is north 
 
-        maxnorth_domain, maxeast_domain, max_zone_number, max_zone_letter = utm.from_latlon(maxlat, maxlon)
+        maxeast_domain, maxnorth_domain, max_zone_number, max_zone_letter = utm.from_latlon(maxlat, maxlon)
 
-        minnorth_domain, mineast_domain, min_zone_number, min_zone_letter = utm.from_latlon(minlat, minlon)
+        mineast_domain, minnorth_domain, min_zone_number, min_zone_letter = utm.from_latlon(minlat, minlon)
 
         relevant_stations = []
         possibly_relevant_stations = []
@@ -341,12 +341,12 @@ class S3NEXRADHelper:
 
             maxeast = maxeast_domain + relevant_radius
             maxnorth = maxnorth_domain + relevant_radius
-            domain_maxlat, domain_maxlon = utm.to_latlon(maxnorth, maxeast, max_zone_number,
+            domain_maxlat, domain_maxlon = utm.to_latlon(maxeast, maxnorth, max_zone_number,
                 max_zone_letter, strict=False)
 
             mineast = mineast_domain - relevant_radius
             minnorth = minnorth_domain - relevant_radius
-            domain_minlat, domain_minlon = utm.to_latlon(minnorth, mineast, min_zone_number,
+            domain_minlat, domain_minlon = utm.to_latlon(mineast, minnorth, min_zone_number,
                     min_zone_letter, strict=False)
 
             # Vertical band of relevant domain bounded by user-given domain
